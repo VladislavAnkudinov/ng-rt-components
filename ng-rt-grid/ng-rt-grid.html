@@ -1,0 +1,114 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ag-grid/4.2.5/ag-grid.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ag-grid/4.2.5/styles/ag-grid.css">
+<dom-module id="ng-rt-grid">
+    <template>
+        <iron-ajax id="getRequest" url="" method="GET" content-type="application/json" on-response="handleResponse" on-error="handleError"></iron-ajax>
+        <iron-ajax id="getData" url="" method="GET" content-type="application/json" on-response="handleGetData" on-error="handleError"></iron-ajax>
+        <iron-request id="xhr"></iron-request>
+        <iron-ajax id="xhr1" method="GET"  content-type="application/json" ></iron-ajax>
+        <ag-grid id="grid" class="ag-bootstrap" style="height: 350px;" row-data="[[rows]]" sortChanged="sortChanged" rowSelected=""></ag-grid>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "ng-rt-grid",
+        properties: {
+            dataUrl: {
+                type: "string",
+                value: ""
+            },
+            columnDefinitions: {
+                type: "object",
+                value: []
+            },
+            rows: {
+                type: "array",
+                value: [],
+                notify: true
+            }
+        },
+        initGrid: function(gridOptions, columnDefinitions, dataUrl){
+            var self = this;
+            var grid = this.$.grid;
+            if(grid.api)
+                grid.api.destroy();
+            this.dataUrl = dataUrl;
+            agGrid.initialiseAgGridWithWebComponents();
+            gridOptions.rowHeight = 50;
+            gridOptions.headerHeight = 50;
+            gridOptions.columnDefs = columnDefinitions;
+
+            grid.setGridOptions(gridOptions);
+            if(gridOptions.rowModelType === "virtual")
+                this.setGridDataset(grid);
+
+            grid.api.addEventListener('rowSelected', function(e){
+              if (e.node.selected) {
+                self.fire('row-selected', {index: e.node.id, data: e.node.data});
+              }
+            });
+        },
+        setRows: function(rows){
+            var self = this;
+            self.rows = [];
+            rows.forEach(function(row){
+                self.push('rows', row);
+            });
+        },
+        setGridDataset: function(grid){
+            var self = this;
+            var dataSource = {
+                rowCount: null,
+                pageSize: 2,
+                overflowSize: 2,
+                maxConcurrentRequests: 2,
+                maxPagesInCache: 2,
+                getRows: function (params) {
+                    var filterObject = {};
+                    var hasFilter = false;
+                    if(self.sortOptions)
+                    {
+                        filterObject.order = [];
+                        self.sortOptions.forEach(function(item){
+                            filterObject.order.push(''+item.colId+' '+item.sort);
+                            hasFilter = true;
+                        });
+                    }
+
+                    if(self.filterOptions){
+                        filterObject.where = {};
+                        Object.keys(self.filterOptions).forEach(function(key) {
+
+                            if(self.filterOptions[key].type==1)
+                                filterObject.where[key] = {like: self.filterOptions[key].filter};
+                            if(self.filterOptions[key].type==2)
+                                filterObject.where[key] =  self.filterOptions[key].filter;
+                            if(self.filterOptions[key].type==3)
+                                filterObject.where[key] =  {neq: self.filterOptions[key].filter};
+
+                            hasFilter = true;
+
+                        });
+                    }
+                    self.$.xhr1.url = self.dataUrl+(hasFilter?'?filter='+JSON.stringify(filterObject):'');
+                    self.$.xhr1._handleResponse = function(request){
+                        params.successCallback(e.detail.__data__.response, true);
+                    }
+                    self.$.xhr1.generateRequest();
+//                    request.addEventListener('response', function(e){
+//                        console.log( 'Got response');
+//                    })
+//                    request.response = function(){
+//
+//                    }
+//                            .send({url: , method: "GET"}).then(function(data){
+//
+//                    });
+                }
+            };
+
+            grid.api.setDatasource(dataSource);
+        }
+
+    });
+</script>

@@ -1,0 +1,73 @@
+<style>
+  d3-chart-donut .arc text {
+    font: 10px sans-serif;
+    text-anchor: middle;
+  }
+  d3-chart-donut .arc path {
+    stroke: #fff;
+  }
+</style>
+<dom-module id="d3-chart-donut">
+  <template>
+    <iron-ajax
+        auto
+        url='{{dataSourceUrl}}'
+        handle-as="json"
+        on-response="onResponse"
+        debounce-duration="300"></iron-ajax>
+    <svg id="svg"></svg>
+  </template>
+  <script>
+    /*
+     <d3-chart-donut
+       options='{"width":300,"height":300,"colors":["red","blue","green"],"font_color":"white"}'
+       data-source_url="/demo/chart_data.json"></d3-chart-donut>
+     */
+    Polymer({
+      is: 'd3-chart-donut',
+      properties: {
+        dataSourceUrl: String,
+        options: Object // may have props.: width, height, colors, font_color
+      },
+      onResponse: function(data) {
+        var dataArr = data.detail.response;
+        this.options = _.defaults({}, this.options, {
+          width: 300,
+          height: 300,
+          colors: ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"],
+          font_color: "white"
+        });
+        var width = this.options.width;
+        var height = this.options.height;
+        var radius = Math.min(width, height) / 2;
+
+        d3.select("svg").selectAll("*").remove();
+
+        var color = d3.scale.ordinal().range(this.options.colors);
+        var arc = d3.svg.arc()
+          .outerRadius(radius - 10)
+          .innerRadius(radius / 3);
+        var pie = d3.layout.pie()
+          .sort(null)
+          .value(function(d) { return d.value; });
+        var svg = d3.select(this.$.svg)
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var g = svg.selectAll(".arc")
+          .data(pie(dataArr))
+          .enter().append("g")
+          .attr("class", "arc");
+        g.append("path")
+          .attr("d", arc)
+          .style("fill", function(d) { return color(d.data.key); });
+        g.append("text")
+          .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+          .attr("dy", ".35em")
+          .style("fill", this.options.font_color)
+          .text(function(d) { return d.data.key; });
+      }
+    });
+  </script>
+</dom-module>
