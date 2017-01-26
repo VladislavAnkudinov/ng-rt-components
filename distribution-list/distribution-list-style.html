@@ -1,0 +1,392 @@
+<style is="custom-style">
+  :host {
+    width: 100%;
+    height: 100%;
+    --toolbar-text: white;
+    --toolbar-bg: red;
+
+  }
+
+  paper-dropdown-menu {
+    --paper-dropdown-menu: {
+      background: white;
+    };
+  }
+
+  paper-listbox {
+    --paper-listbox-background-color: white;
+  }
+
+  paper-material {
+    padding: 0;
+  }
+
+  @keyframes upload {
+    0% {
+      bottom: -126px;
+      left: 20px
+    }
+    25% {
+      bottom: 20px;
+      left: 20px
+    }
+    50% {
+      bottom: 20px;
+      left: 80%
+    }
+    100% {
+      bottom: 400px;
+      left: 80%
+    }
+  }
+
+  @keyframes upload2 {
+    0% {
+      bottom: -26px;
+      left: 20px
+    }
+    15% {
+      bottom: 220px;
+      left: 20px
+    }
+    85% {
+      bottom: 20px;
+      left: ~ "calc(100% - 140px)"
+    }
+    100% {
+      bottom: 400px;
+      left: 80%
+    }
+  }
+
+  paper-dropdown-menu {
+    width: 100%;
+  }
+
+  paper-listbox {
+    --paper-listbox-background-color: white;
+  }
+
+  paper-material {
+  }
+
+  @keyframes upload {
+    0% {
+      bottom: -126px;
+      left: 20px
+    }
+    25% {
+      bottom: 20px;
+      left: 20px
+    }
+    50% {
+      bottom: 20px;
+      left: 80%
+    }
+    100% {
+      bottom: 400px;
+      left: 80%
+    }
+  }
+
+  @keyframes upload2 {
+    0% {
+      bottom: -26px;
+      left: 20px
+    }
+    15% {
+      bottom: 220px;
+      left: 20px
+    }
+    85% {
+      bottom: 20px;
+      left: ~ "calc(100% - 140px)"
+    }
+    100% {
+      bottom: 400px;
+      left: 80%
+    }
+  }
+
+  paper-dropdown-menu {
+    width: 100%;
+  }
+
+  .headerblock h3 {
+    flex: 1 0 auto;
+  }
+
+  #copywindow.started paper-progress {
+    visibility: visible;
+  }
+
+  paper-progress {
+    position: absolute;
+    visibility: hidden;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    --paper-progress-active-color: var(--primary-color);
+    --paper-progress-secondary-color: var(--tymlez-green);
+  }
+
+  #contact_book {
+    min-height: 300px;
+  / / right: 0 px;
+    height: calc(100% - 80px);
+    width: 50%;
+    min-width: 600px;
+    display: flex;
+    flex-direction: column;
+    border-color: var(--tymlez-blue);
+  }
+
+  #searchbar {
+    position: absolute;
+    visibility: hidden;
+    height: 100%;
+    width: 100%;
+    background: var(--tymlez-blue);
+    left: 0;
+    top: 0;
+    margin: 0 !important;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    --paper-input-container: {
+      padding: 0 10px;
+      flex: 1;
+    };
+  }
+
+  #contact_book .buttons {
+    flex: 0 0 50px;
+    display: flex;
+    padding: 10px;
+  }
+
+  #contact_book .buttons paper-button {
+    flex: 1;
+  }
+
+  #contact_book.group-open .contacTabs {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #contact_book.group-open .userTab {
+    display: none;
+  }
+
+  .groupTab {
+    display: none;
+  }
+
+  #contact_book.group-open .groupTab {
+    display: block;
+  }
+
+  paper-dialog paper-header-panel {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    --paper-header-panel-shadow: {
+      box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0);
+    }
+  }
+
+  paper-dialog paper-toolbar {
+    --paper-toolbar-sm-height: 50px;
+    --paper-toolbar-height: 50px;
+    /*--paper-toolbar-background: var(--toolbar-bg);
+    --paper-toolbar: {
+      color: var(--toolbar-text);
+    };*/
+
+  }
+
+  paper-dialog paper-header-panel .title {
+    margin-left: 20px;
+  }
+
+  paper-dialog neon-animatable {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contacts {
+    padding: 0px 0px 20px 0px;
+    margin: 0;
+    position: relative;
+    flex: 1;
+  }
+
+  .listheader {
+    line-height: 50px;
+    height: 50px;
+    display: flex;
+    background: rgba(20, 20, 20, 0.05);
+    border: none;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  .listheader, .contacts .keysrow {
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  .listcontent .keysrow {
+    transition: all 0.2s;
+    margin-top: 0;
+  }
+
+  .listcontent .keysrow.selected {
+    background: var(--paper-yellow-200);
+  / / color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  / / box-shadow: 0 px 1 px 1 px 1 px rgba(0, 0, 0, 0.1);
+  }
+
+  .listcontent .keysrow.selected::before {
+    position: absolute;
+    content: " ";
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .0);
+    height: 1px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .listcontent .keysrow .checkbox {
+    opacity: 0;
+    margin-left: -24px;
+    transition: all 0.2s;
+  }
+
+  .listcontent .keysrow.selected .checkbox {
+    opacity: 1;
+    color: var(--tymlez-blue);
+    margin-left: 0px;
+    margin-right: 10px;
+  }
+
+  .contacts .listcontent {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .contacts .listcontent > div {
+    flex: 0 0 48px;
+  }
+
+  .listheader > div {
+    padding: 0 10px;
+    overflow: hidden;
+    line-height: 50px;
+    height: 50px;
+
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    flex: 1;
+  }
+
+  .listheader > div:last-child {
+    border: none;
+  }
+
+  .contacts .keysrow > div {
+    padding: 0 10px;
+    overflow: hidden;
+    line-height: 48px;
+    height: 48px;
+    flex: 1;
+  }
+
+  .listheader > div:nth-child(1), .contacts .keysrow > div:nth-child(1) {
+    flex: 1 0;
+    min-width: 200px;
+  }
+
+  .listheader > div:nth-child(2), .contacts .keysrow > div:nth-child(2) {
+    flex: 0.5;
+    min-width: 150px;
+    flex-shrink: 4;
+  }
+
+  .listheader > div:nth-child(3), .contacts .keysrow > div:nth-child(3) {
+    flex: 0.5;
+    min-width: 150px;
+    flex-shrink: 4;
+  }
+
+  #contact_book h2 {
+    color: white;
+    padding: 0 20px;
+    font-size: 26px;
+    font-weight: 300;
+  }
+
+  paper-dialog paper-tabs {
+    --paper-tabs: {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: bold;
+      height: 100%;
+      font-size: 0.9em;
+    / / text-transform: uppercase;
+      font-weight: 600;
+      align-items: flex-start;
+      justify-content: flex-start;
+      position: relative;
+    };
+  }
+
+  paper-dialog paper-tabs::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0);
+  }
+
+  paper-dialog paper-tabs {
+    --paper-tabs-selection-bar: {
+      top: 0;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.1);
+    };
+  }
+
+  paper-tab.iron-selected {
+    color: rgba(255, 255, 255, 1);
+  }
+
+  neon-animated-pages, neon-animatable {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  paper-dialog paper-toolbar paper-input {
+    flex: 1;
+    margin: 0 10px;
+    --paper-input-container-color: rgba(255, 255, 255, 0.5);
+    --paper-input-container-focus-color: white;
+    --paper-input-container-input-color: white;
+  }
+
+</style>

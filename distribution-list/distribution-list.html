@@ -1,0 +1,179 @@
+<dom-module id="ng-rt-components-distribution-list">
+  <style include="shared-styles"></style>
+  <link rel="import" type="html" href="distribution-list-style.html">
+  <template>
+    <paper-dialog id="contact_book" class="all" role="alertdialog" entry-animation="slide-from-right-animation"
+                  exit-animation="slide-right-animation">
+
+      <paper-header-panel class="dialog_headerpanel">
+        <paper-toolbar id="contact_toolbar" class="dialog_toolbar medium-tall">
+
+          <paper-input id="searchbar" no-label-float label="Search" on-keyup="searchOnEnter" on-blur="searchBarClose">
+            <paper-icon-button prefix icon="search"></paper-icon-button>
+            <paper-icon-button suffix icon="close" on-click="searchBarClose"></paper-icon-button>
+          </paper-input>
+
+          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+          <iron-icon class="userTab" icon="communication:contacts"></iron-icon>
+          <paper-icon-button class="groupTab" on-click="backFromGroupClick" icon="icons:arrow-back"></paper-icon-button>
+          <span class="title userTab flex">Contact book</span>
+          <paper-input class="groupTab group-input" no-label-float label="group name"></paper-input>
+          <paper-icon-button icon="icons:search" on-click="searchBarOpen"></paper-icon-button>
+          <paper-icon-button dialog-dismiss icon="icons:close"></paper-icon-button>
+
+          <paper-tabs class="middle fit contacTabs" selected="{{selected}}" noink="true">
+            <paper-tab style="flex: 1">Users</paper-tab>
+            <paper-tab style="flex: 1">Groups</paper-tab>
+          </paper-tabs>
+        </paper-toolbar>
+        <neon-animated-pages class="flex" selected="[[selected]]" exit-animation="fade-out-animation">
+          <neon-animatable entry-animation="slide-from-left-animation">
+            <div class="contacts">
+
+              <div class="listheader">
+                <div>Name</div>
+                <div>Email</div>
+                <div>Company</div>
+              </div>
+
+              <div class="listcontent">
+                <template is="dom-repeat" items="{{contacts}}" as="contact">
+                  <div class="keysrow" onclick="" on-click="selectUser">
+                    <div>
+                      <iron-icon class="checkbox" icon="icons:check"></iron-icon>
+                      {{contact.names.0}}&nbsp;{{contact.names.1}}
+                    </div>
+                    <div>{{contact.email}}</div>
+                    <div>{{contact.company}}</div>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div class="buttons">
+              <paper-button class="groupTab" style="flex: 0 0 auto; margin-right: 10px; ">Cancel</paper-button>
+              <paper-button autofocus on-click="acceptSettings">Accept</paper-button>
+            </div>
+            </div>
+          </neon-animatable>
+          <neon-animatable entry-animation="slide-from-right-animation">
+
+            <div class="contacts">
+
+              <div class="listheader">
+                <div>Group name</div>
+                <div>Users</div>
+                <div>Type</div>
+              </div>
+
+              <div class="listcontent">
+                <div class="keysrow" on-click="groupClick">
+                  <div>Co-workers</div>
+                  <div>John, Michael, Ron, Harry</div>
+                  <div>Personal</div>
+                </div>
+                <div class="keysrow" on-click="groupClick">
+                  <div>Clients</div>
+                  <div>John, Michael, Ron, Harry</div>
+                  <div>Global</div>
+                </div>
+              </div>
+            </div>
+            <div class="buttons">
+              <paper-button autofocus on-click="">Add Group</paper-button>
+            </div>
+
+          </neon-animatable>
+
+        </neon-animated-pages>
+      </paper-header-panel>
+    </paper-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'ng-rt-components-distribution-list',
+      properties: {
+        selected: {
+          type: "string",
+          value: "0"
+        },
+        contacts: {
+          type: Array,
+          notify: true,
+          value: function () {
+            return [
+              {
+                names: ['John', 'Anderson'],
+                email: 'John@google.com',
+                company: 'Google'
+              },
+              {
+                names: ['Bill', 'Bagington'],
+                email: 'Bill@google.com',
+                company: 'Google'
+              }
+            ]
+          }
+        },
+        contactGroups: {
+          type: Array,
+          notify: true,
+          value: function () {
+            return [
+              {
+                name: 'Collegues',
+                contacts: [
+                  'John@google.com',
+                  'Bill@google.com'
+                ]
+              }
+            ]
+          }
+        }
+      },
+      ready: function () {
+        return;
+        this.contacts = [
+          {
+            names: ['John', 'Anderson'],
+            email: 'John@google.com',
+            company: 'Google'
+          },
+          {
+            names: ['Bill', 'Bagington'],
+            email: 'Bill@google.com',
+            company: 'Google'
+          }
+        ]
+      },
+      selectUser: function (event) {
+        let selectedUser = event.target.parentElement;
+        selectedUser.classList.toggle("selected");
+      },
+      groupClick: function () {
+        this.selected = 0;
+        this.$$('contact_book').classList.add("group-open");
+        this.$.contact_toolbar.classList.remove("medium-tall");
+        this.$.contact_toolbar.classList.add("medium");
+      },
+      backFromGroupClick: function () {
+        this.selected = 1;
+        this.$$('contact_book').classList.remove("group-open");
+        this.$.contact_toolbar.classList.remove("medium");
+        this.$.contact_toolbar.classList.add("medium-tall");
+      },
+      searchBarOpen: function () {
+        this.$.searchbar.style.visibility = "visible";
+        document.getElementById('searchbar').$.input.focus();
+      },
+      searchBarClose: function () {
+        this.$.searchbar.style.visibility = "hidden";
+      },
+      searchOnEnter: function (e) {
+        if (e.keyCode === 13) {
+          console.log("search");
+        }
+      }
+    });
+  </script>
+</dom-module>
